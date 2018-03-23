@@ -10,7 +10,7 @@ var md_upload = multipart({uploadDir: './uploads/presentaciones_items'});
 
 var PresentacionItemController = require('../controllers/presentacion_item');
 
-api.get('/getListByItem/:item_id', md_auth.ensureAuth, PresentacionItemController.getListByItem);
+api.get('/getListByItem/:item_id', PresentacionItemController.getListByItem);
 api.post('/create', md_auth.ensureAuth, PresentacionItemController.create);
 api.get('/get/:id', md_auth.ensureAuth, PresentacionItemController.get);
 api.post('/upload-image/:id', [md_auth.ensureAuth, md_upload], PresentacionItemController.uploadImage);

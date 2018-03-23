@@ -3,7 +3,7 @@
 var mysql = require('mysql');
 
 var connection = mysql.createConnection({
-    host: 'rds-mysql-instance.cbr5sl3fmc9c.us-east-1.rds.amazonaws.com',
+    host: '35.199.92.180',
     user: 'davisonsp',
     password: 'davisonsp',
     database: 'db_la_granja'
