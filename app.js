@@ -6,7 +6,7 @@ var bodyParser = require('body-parser');
 var app = express();
 
 var grupo_item_routes = require('./routes/grupo_item');
-var info_routes = require('./routes/info');
+var default_routes = require('./routes/default');
 var item_routes = require('./routes/item');
 var local_routes = require('./routes/local');
 var local_has_item_routes = require('./routes/local_has_item');
@@ -27,8 +27,8 @@ app.use((req, res, next) => {
 	next();
 });
 
+app.use('/', default_routes);
 app.use('/api/grupo_item', grupo_item_routes);
-app.use('/api/info', info_routes);
 app.use('/api/item', item_routes);
 app.use('/api/local', local_routes);
 app.use('/api/local_has_item', local_has_item_routes);

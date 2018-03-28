@@ -17,7 +17,9 @@ api.put('/update/:username', md_auth.ensureAuth, UsuarioController.update);
 api.post('/upload-image/:username', [md_auth.ensureAuth, md_upload], UsuarioController.uploadImage);
 api.get('/get-image/:imageFile', UsuarioController.getImageFile);
 
+/*
 api.get('/get-image-aws/:imageFile', UsuarioController.getImageAWS);
 api.get('/get-url-image-aws/:imageFile', UsuarioController.getURLImageAWS);
+*/
 
 module.exports = api;

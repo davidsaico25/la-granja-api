@@ -6,14 +6,14 @@ var bcrypt = require('bcrypt-nodejs');
 var jwt = require('../services/jwt');
 var moment = require('moment');
 
-////
+/*
 var AWS = require('aws-sdk');
 AWS.config.loadFromPath('./services/aws_config.json');
 var http = require('http');
 var util = require('util');
 ////
 const request = require('request');
-////
+*/
 
 var UsuarioModel = require('../models/usuario');
 
@@ -125,12 +125,13 @@ UsuarioController.uploadImage = (req, res) => {
         var file_ext = file_split[1];
 
         if (file_ext == 'png' || file_ext == 'jpg' || file_ext == 'jpeg' || file_ext == 'gif') {
-            ////
+
+            /*
             var image_name = req.files.image.name;
             var s3 = new AWS.S3();
-            /*
+            
             var bucketParams = { Bucket: 'davisonsp-media' };
-            s3.createBucket(bucketParams);*/
+            s3.createBucket(bucketParams);
 
             var CODE_PATH = './uploads/usuarios/';
             var fileBuffer = fs.readFileSync(CODE_PATH + file_name);
@@ -149,8 +150,8 @@ UsuarioController.uploadImage = (req, res) => {
                     console.log('succesfully uploaded the image! ');
                 }
             });
+            */
 
-            ////
             UsuarioModel.update(username, { image: file_name }, (err, result) => {
                 if (err) return res.status(500).send({ err });
 
@@ -177,6 +178,7 @@ UsuarioController.getImageFile = (req, res) => {
     });
 }
 
+/*
 UsuarioController.getImageAWS = (req, res) => {
     var imageFile = req.params.imageFile;
 
@@ -212,5 +214,6 @@ UsuarioController.deleteImageAWS = (req, res) => {
         res.status(200).send({ params });
     });
 }
+*/
 
 module.exports = UsuarioController;

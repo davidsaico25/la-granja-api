@@ -5,7 +5,7 @@ var path = require('path');
 
 var PresentacionItemModel = require('../models/presentacion_item');
 
-var PresentacionItemController = () => {};
+var PresentacionItemController = () => { };
 
 PresentacionItemController.get = (req, res) => {
     var id = req.params.id;
@@ -36,19 +36,49 @@ PresentacionItemController.create = (req, res) => {
 
     var codigo_barra = params.codigo_barra;
 
-    PresentacionItemModel.getByCodigoBarra(codigo_barra, (err, listPresentacionItem) => {
-        if (err) return res.status(500).send({ err });
+    var create_pi = false;
 
-        if (listPresentacionItem.length > 0) {
-            return res.status(500).send({ message: 'El codigo de barra ya es usado' });
-        } else {
-            PresentacionItemModel.create(params, (err, result) => {
-                if (err) return res.status(500).send({ message: err });
-        
-                res.status(200).send({ id: result.insertId });
-            });
-        }
-    });
+    if (codigo_barra) {
+        PresentacionItemModel.getByCodigoBarra(codigo_barra, (err, listPresentacionItem) => {
+            if (err) return res.status(500).send({ err });
+
+            if (listPresentacionItem.length > 0) {
+                return res.status(500).send({ message: 'El codigo de barra ya es usado' });
+            } else {
+                create_pi = true;
+            }
+        });
+    } else {
+        create_pi = true;
+    }
+
+    if (create_pi) {
+        PresentacionItemModel.create(params, (err, result) => {
+            if (err) return res.status(500).send({ message: err });
+
+            return res.status(200).send({ id: result.insertId });
+        });
+    }
+}
+
+PresentacionItemController.update = (req, res) => {
+    var params = req.body;
+
+    var codigo_barra = params.codigo_barra;
+    /*
+        PresentacionItemModel.getByCodigoBarra(codigo_barra, (err, listPresentacionItem) => {
+            if (err) return res.status(500).send({ err });
+    
+            if (listPresentacionItem.length > 0) {
+                return res.status(500).send({ message: 'El codigo de barra ya es usado' });
+            } else {
+                PresentacionItemModel.create(params, (err, result) => {
+                    if (err) return res.status(500).send({ message: err });
+            
+                    res.status(200).send({ id: result.insertId });
+                });
+            }
+        });*/
 }
 
 PresentacionItemController.uploadImage = (req, res) => {
@@ -66,7 +96,7 @@ PresentacionItemController.uploadImage = (req, res) => {
         if (file_ext == 'png' || file_ext == 'jpg' || file_ext == 'jpeg' || file_ext == 'gif') {
             PresentacionItemModel.update(presentacion_item_id, { imagen: file_name }, (err, result) => {
                 if (err) return res.status(500).send({ err });
-                
+
                 res.status(200).send({ result });
             });
         } else {
