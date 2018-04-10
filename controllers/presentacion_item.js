@@ -34,51 +34,35 @@ PresentacionItemController.getListByItem = (req, res) => {
 PresentacionItemController.create = (req, res) => {
     var params = req.body;
 
-    var codigo_barra = params.codigo_barra;
+    var errors = [];
 
-    var create_pi = false;
+    validate_codigo_barra(params, errors)
+        .then(() => {
+            return validate_crud(params, errors);
+        })
+        .then(() => {
+            if (errors.length > 0) return res.status(500).send({ errors });
 
-    if (codigo_barra) {
-        PresentacionItemModel.getByCodigoBarra(codigo_barra, (err, listPresentacionItem) => {
-            if (err) return res.status(500).send({ err });
+            PresentacionItemModel.create(params, (err, result) => {
+                if (err) return res.status(500).send({ err });
 
-            if (listPresentacionItem.length > 0) {
-                return res.status(500).send({ message: 'El codigo de barra ya es usado' });
-            } else {
-                create_pi = true;
-            }
+                return res.status(200).send({ id: result.insertId });
+            });
         });
-    } else {
-        create_pi = true;
-    }
-
-    if (create_pi) {
-        PresentacionItemModel.create(params, (err, result) => {
-            if (err) return res.status(500).send({ message: err });
-
-            return res.status(200).send({ id: result.insertId });
-        });
-    }
 }
 
 PresentacionItemController.update = (req, res) => {
+    var id = req.params.id;
+
     var params = req.body;
 
-    var codigo_barra = params.codigo_barra;
-    /*
-        PresentacionItemModel.getByCodigoBarra(codigo_barra, (err, listPresentacionItem) => {
-            if (err) return res.status(500).send({ err });
-    
-            if (listPresentacionItem.length > 0) {
-                return res.status(500).send({ message: 'El codigo de barra ya es usado' });
-            } else {
-                PresentacionItemModel.create(params, (err, result) => {
-                    if (err) return res.status(500).send({ message: err });
-            
-                    res.status(200).send({ id: result.insertId });
-                });
-            }
-        });*/
+    if (!params.codigo_barra) params.codigo_barra = null;
+
+    PresentacionItemModel.update(id, params, (err, result) => {
+        if (err) return res.status(500).send({ err });
+
+        return res.status(200).send({ result });
+    });
 }
 
 PresentacionItemController.uploadImage = (req, res) => {
@@ -121,3 +105,39 @@ PresentacionItemController.getImageFile = (req, res) => {
 }
 
 module.exports = PresentacionItemController;
+
+function validate_codigo_barra(data, errors) {
+    var codigo_barra = data.codigo_barra;
+
+    var promise = new Promise(function (resolve, reject) {
+        if (!codigo_barra) resolve(errors);
+
+        PresentacionItemModel.getByCodigoBarra(codigo_barra, (err, listPresentacionItem) => {
+            if (err) reject(err);
+
+            if (listPresentacionItem.length > 0) {
+                errors.push('codigo de barra ya existe');
+                resolve(errors);
+            } else {
+                resolve(errors);
+            }
+        });
+    });
+
+    return promise;
+}
+
+function validate_crud(data, errors) {
+    var codigo_barra = data.codigo_barra;
+
+    var promise = new Promise(function (resolve, reject) {
+        if (!codigo_barra) data.codigo_barra = null;
+        if (codigo_barra && codigo_barra.length != 13) {
+            errors.push('codigo barra debe tener 13 caracteres');
+        }
+
+        resolve(errors);
+    });
+
+    return promise;
+}

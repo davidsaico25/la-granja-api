@@ -21,14 +21,14 @@ PresentacionItemModel.getListByItem = (item_id, callback) => {
     connection.query(options, callback);
 }
 
-PresentacionItemModel.create = (presentacionItemData, callback) => {
+PresentacionItemModel.create = (data, callback) => {
     var sql = "INSERT INTO `presentacion_item` SET ?";
-    connection.query(sql, [presentacionItemData], callback);
+    connection.query(sql, [data], callback);
 }
 
-PresentacionItemModel.update = (presentacion_item_id, presentacionItemData, callback) => {
+PresentacionItemModel.update = (id, data, callback) => {
     var sql = "UPDATE `presentacion_item` SET ? WHERE `id`= ?";
-    connection.query(sql, [presentacionItemData, presentacion_item_id], callback);
+    connection.query(sql, [data, id], callback);
 }
 
 PresentacionItemModel.get = (id, callback) => {
