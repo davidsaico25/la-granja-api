@@ -33,6 +33,7 @@ PresentacionItemController.getListByItem = (req, res) => {
 
 PresentacionItemController.create = (req, res) => {
     var params = req.body;
+    params.imagen = 'item.png';
 
     var errors = [];
 
@@ -56,13 +57,18 @@ PresentacionItemController.update = (req, res) => {
 
     var params = req.body;
 
-    if (!params.codigo_barra) params.codigo_barra = null;
+    var errors = [];
 
-    PresentacionItemModel.update(id, params, (err, result) => {
-        if (err) return res.status(500).send({ err });
+    validate_crud(params, errors)
+        .then(() => {
+            if (errors.length > 0) return res.status(500).send({ errors });
 
-        return res.status(200).send({ result });
-    });
+            PresentacionItemModel.update(id, params, (err, result) => {
+                if (err) return res.status(500).send({ err });
+
+                return res.status(200).send({ result });
+            });
+        });
 }
 
 PresentacionItemController.uploadImage = (req, res) => {
@@ -128,13 +134,16 @@ function validate_codigo_barra(data, errors) {
 }
 
 function validate_crud(data, errors) {
+    if (!data.codigo_barra) data.codigo_barra = null;
     var codigo_barra = data.codigo_barra;
+    var nombre = data.nombre;
 
     var promise = new Promise(function (resolve, reject) {
-        if (!codigo_barra) data.codigo_barra = null;
         if (codigo_barra && codigo_barra.length != 13) {
             errors.push('codigo barra debe tener 13 caracteres');
         }
+        
+        if (!nombre) errors.push('la presentacion debe tener un nombre');
 
         resolve(errors);
     });
