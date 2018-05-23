@@ -16,6 +16,21 @@ PresentacionItemController.get = (req, res) => {
     });
 }
 
+PresentacionItemController.getList = (req, res) => {
+    PresentacionItemModel.getList((err, result) => {
+        if (err) return res.status(500).send({ err });
+
+        var listPresentacionItem = [];
+        result.forEach(row => {
+            row.pi.item = row.i;
+            row.pi.item.unidad_medida = row.um;
+            listPresentacionItem.push(row.pi);
+        });
+
+        return res.status(200).send({ listPresentacionItem });
+    });
+}
+
 PresentacionItemController.getListByItem = (req, res) => {
     var item_id = req.params.item_id;
     PresentacionItemModel.getListByItem(item_id, (err, result) => {
@@ -71,6 +86,40 @@ PresentacionItemController.update = (req, res) => {
         });
 }
 
+PresentacionItemController.delete = (req, res) => {
+    var id = req.params.id;
+
+    PresentacionItemModel.delete(id, (err, result) => {
+        if (err) return res.status(500).send({ err });
+
+        return res.status(200).send({ result });
+    });
+}
+
+PresentacionItemController.activate = (req, res) => {
+    var id = req.params.id;
+
+    var data = { estado: 'A' };
+
+    PresentacionItemModel.update(id, data, (err, result) => {
+        if (err) return res.status(500).send({ err });
+
+        return res.status(200).send({ result });
+    });
+}
+
+PresentacionItemController.deactivate = (req, res) => {
+    var id = req.params.id;
+
+    var data = { estado: 'D' };
+
+    PresentacionItemModel.update(id, data, (err, result) => {
+        if (err) return res.status(500).send({ err });
+
+        return res.status(200).send({ result });
+    });
+}
+
 PresentacionItemController.uploadImage = (req, res) => {
     var presentacion_item_id = req.params.id;
     var file_name = 'no subido...';
@@ -112,6 +161,8 @@ PresentacionItemController.getImageFile = (req, res) => {
 
 module.exports = PresentacionItemController;
 
+//FUNCTIONS
+
 function validate_codigo_barra(data, errors) {
     var codigo_barra = data.codigo_barra;
 
@@ -142,7 +193,7 @@ function validate_crud(data, errors) {
         if (codigo_barra && codigo_barra.length != 13) {
             errors.push('codigo barra debe tener 13 caracteres');
         }
-        
+
         if (!nombre) errors.push('la presentacion debe tener un nombre');
 
         resolve(errors);

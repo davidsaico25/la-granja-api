@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 
 var app = express();
 
+var abastecimiento_routes = require('./routes/abastecimiento');
 var grupo_item_routes = require('./routes/grupo_item');
 var default_routes = require('./routes/default');
 var item_routes = require('./routes/item');
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', default_routes);
+app.use('/api/abastecimiento', abastecimiento_routes);
 app.use('/api/grupo_item', grupo_item_routes);
 app.use('/api/item', item_routes);
 app.use('/api/local', local_routes);

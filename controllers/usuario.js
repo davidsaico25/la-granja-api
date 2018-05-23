@@ -25,7 +25,7 @@ UsuarioController.login = (req, res) => {
     var username = params.username;
     var password = params.password;
 
-    UsuarioModel.getOne(username, (err, result) => {
+    UsuarioModel.get(username, (err, result) => {
         if (err) return res.status(500).send({ err });
 
         if (result.length == 0) {
@@ -73,7 +73,7 @@ UsuarioController.create = (req, res) => {
 
             params.password = hash;
             //verificar que no exista user con el mismo username
-            UsuarioModel.getOne(params.username, (err, listUsuario) => {
+            UsuarioModel.get(params.username, (err, listUsuario) => {
                 if (err) return res.status(500).send({ err });
 
                 if (listUsuario.length) {

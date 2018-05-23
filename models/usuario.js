@@ -10,7 +10,7 @@ UsuarioModel.getAll = (callback) => {
     connection.query(sql, callback);
 }
 
-UsuarioModel.getOne = (username, callback) => {
+UsuarioModel.get = (username, callback) => {
     var sql = "SELECT *" +
     " FROM `usuario` AS usuario" +
     " INNER JOIN `persona` AS persona" +
