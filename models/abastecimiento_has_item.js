@@ -24,8 +24,8 @@ AbastecimientoHasItemModel.getList = (abastecimiento_id, callback) => {
     connection.query(options, callback);
 }
 
-AbastecimientoHasItemModel.create = (data, callback) => {
-    var sql = "INSERT INTO `abastecimiento_has_item` SET ?";
+AbastecimientoHasItemModel.create = (columns, data, callback) => {
+    var sql = "INSERT INTO `abastecimiento_has_item` (`" + columns.join('`,`') + "`) VALUES ?";
 
     connection.query(sql, [data], callback);
 }

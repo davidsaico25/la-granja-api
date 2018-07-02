@@ -21,6 +21,7 @@ PresentacionItemController.getList = (req, res) => {
         if (err) return res.status(500).send({ err });
 
         var listPresentacionItem = [];
+        
         result.forEach(row => {
             row.pi.item = row.i;
             row.pi.item.unidad_medida = row.um;

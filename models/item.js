@@ -25,6 +25,23 @@ ItemModel.get = (id, callback) => {
     connection.query(options, callback);
 }
 
+ItemModel.getList = (callback) => {
+    var sql = "SELECT *" +
+    " FROM `item` AS i" +
+    " INNER JOIN `unidad_medida` AS um" +
+    " ON (um.`id` = i.`unidad_medida_id`)" +
+    " INNER JOIN `marca_item` as mi" +
+    " ON (mi.`id` = i.`marca_item_id`)" +
+    " INNER JOIN `grupo_item` as gi" +
+    " ON (gi.`id` = i.`grupo_item_id`)" +
+    " WHERE i.`estado` = 'A';";
+
+    sql = mysql.format(sql);
+
+    var options = { sql: sql, nestTables: true };
+    connection.query(options, callback);
+}
+
 ItemModel.getListByGrupoItem = (grupo_item_id, callback) => {    
     var sql = "SELECT *" +
     " FROM `item` AS i" +

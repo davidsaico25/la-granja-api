@@ -7,8 +7,8 @@ var ItemController = () => { };
 ItemController.get = (req, res) => {
     var id = req.params.id;
 
-    ItemModel.get(id, (err, result) => {
-        if (err) return res.status(500).send({ err });
+    ItemModel.get(id, (error, result) => {
+        if (error) return res.status(500).send({ error });
 
         var item = result[0].i;
         item.unidad_medida = result[0].um;
@@ -19,11 +19,28 @@ ItemController.get = (req, res) => {
     });
 }
 
+ItemController.getList = (req, res) => {
+    ItemModel.getList((error, result) => {
+        if (error) return res.status(500).send({ error });
+
+        var listItem = [];
+
+        result.forEach(row => {
+            row.i.unidad_medida = row.um;
+            row.i.marca_item = row.mi;
+            row.i.grupo_item = row.gi;
+            listItem.push(row.i);
+        });
+
+        return res.status(200).send({ listItem });
+    });
+}
+
 ItemController.getListByGrupoItem = (req, res) => {
     var grupo_item_id = req.params.grupo_item_id;
-    
-    ItemModel.getListByGrupoItem(grupo_item_id, (err, result) => {
-        if (err) return res.status(500).send({ err });
+
+    ItemModel.getListByGrupoItem(grupo_item_id, (error, result) => {
+        if (error) return res.status(500).send({ error });
 
         var listItem = [];
         result.forEach(item => {

@@ -2,26 +2,38 @@
 
 var mysql = require('mysql');
 
-/*
-var connection = mysql.createConnection({
-    host: '35.199.92.180',
-    user: '',
-    password: '',
-    database: 'db_la_granja'
-});
-*/
-
 var connection = mysql.createConnection({
     host: 'localhost',
+    port: '3306',
     user: 'root',
     password: '',
     database: 'db_la_granja',
-    timezone: 'utc'
+    dateStrings: true
 });
 
-connection.connect((err) => {
-    if (err) console.log('Error connexion bd: ' + err.message);
+connection.connect((error) => {
+    if (error) console.log('Error connexion bd: ' + error.message);
     console.log('conexion a la bd correcta');
 });
 
 module.exports = connection;
+
+/*
+var moment = require('moment');
+var connection = require('knex')({
+    client: 'mysql',
+    connection: {
+        host: db.host,
+        user: db.user,
+        password: db.password,
+        database: db.database,
+        timezone: 'UTC',
+        typeCast: function (field, next) {
+            if (field.type == 'DATETIME') {
+                return moment(field.string()).format('YYYY-MM-DD HH:mm:ss');
+            }
+            return next();
+        }
+    }
+});
+*/
