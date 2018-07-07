@@ -24,6 +24,25 @@ AbastecimientoModel.get = (id, callback) => {
     connection.query(options, callback);
 }
 
+AbastecimientoModel.getListByEstado = (estado_abastecimiento_id, callback) => {
+    var sql = "SELECT *" +
+    " FROM `abastecimiento` AS a" +
+    " INNER JOIN `local` AS l1" +
+    " ON (a.`local_id_origen` = l1.`id`)" +
+    " INNER JOIN `local` AS l2" +
+    " ON (a.`local_id_destino` = l2.`id`)" +
+    " INNER JOIN `estado_abastecimiento` AS ea" +
+    " ON (ea.`id` = a.`estado_abastecimiento_id`)" +
+    " WHERE a.`estado_abastecimiento_id` = ?;";
+
+    var params = [estado_abastecimiento_id];
+
+    sql = mysql.format(sql, params);
+
+    var options = { sql: sql, nestTables: true };
+    connection.query(options, callback);
+}
+
 AbastecimientoModel.create = (data, callback) => {
     var sql = "INSERT INTO `abastecimiento` SET ?";
     connection.query(sql, [data], callback);

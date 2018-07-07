@@ -26,8 +26,6 @@ AbastecimientoController.get = (req, res) => {
         AbastecimientoHasItemModel.getList(abastecimiento_id, (error, result) => {
             if (error) return res.status(500).send({ error });
 
-            abastecimiento.listAbastecimientoHasItem = listAbastecimientoHasItem;
-
             var listAbastecimientoHasItem = [];
             result.forEach(row => {
                 row.ahi.item = row.i;
@@ -57,7 +55,7 @@ AbastecimientoController.create = (req, res) => {
     };
 
     connection.beginTransaction(function (error) {
-        if (error) { throw error; }
+        if (error) return res.status(500).send({ error });
 
         AbastecimientoModel.create(abastecimiento, (error, result) => {
             if (error) {
@@ -100,4 +98,61 @@ AbastecimientoController.create = (req, res) => {
     });
 };
 
+AbastecimientoController.getListByEstado = (req, res) => {
+
+    let estado_abastecimiento_id = req.params.id;
+
+    AbastecimientoModel.getListByEstado(estado_abastecimiento_id, (error, result) => {
+        if (error) return res.status(500).send({ error });
+
+        var listAbastecimiento = [];
+
+        result.forEach(row => {
+            let abastecimiento = row.a;
+            abastecimiento.estado_abastecimiento = row.ea;
+            abastecimiento.local_origen = row.l1;
+            abastecimiento.local_destino = row.l2;
+            listAbastecimiento.push(abastecimiento);
+        });
+
+        let array_promises = [];
+        listAbastecimiento.forEach(abastecimiento => {
+            array_promises.push(validate(abastecimiento));
+        });
+        listAbastecimiento.length = 0;
+
+        Promise.all(array_promises)
+            .then((listAbastecimiento) => {
+                return res.status(200).send({ listAbastecimiento });
+            })
+            .catch((error) => {
+                return res.status(500).send({ error });
+            });
+    });
+}
+
 module.exports = AbastecimientoController;
+
+//FUNCTIONS
+
+function validate(abastecimiento) {
+    var promise = new Promise(function (resolve, reject) {
+        AbastecimientoHasItemModel.getList(abastecimiento.id, (error, result) => {
+            if (error) return reject(error);
+
+            var listAbastecimientoHasItem = [];
+            result.forEach(row => {
+                row.ahi.item = row.i;
+                row.ahi.item.unidad_medida = row.um;
+                row.ahi.item.marca_item = row.m;
+                listAbastecimientoHasItem.push(row.ahi);
+            });
+
+            abastecimiento.listAbastecimientoHasItem = listAbastecimientoHasItem;
+
+            resolve(abastecimiento);
+        });
+    });
+
+    return promise;
+}
