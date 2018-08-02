@@ -1,6 +1,6 @@
 'use strict'
 
-var LocalHasInsumoModel = require('../models/local_has_item');
+var LocalHasItemModel = require('../models/local_has_item');
 
 var LocalHasInsumoController = () => { };
 
@@ -11,7 +11,7 @@ LocalHasInsumoController.getInventarioByLocal = (req, res) => {
         return res.status(500).send({ message: "usted no esta autorizado para ver este inventario" });
     }
 
-    LocalHasInsumoModel.getInventarioByLocal(local_id, (err, result) => {
+    LocalHasItemModel.getInventarioByLocal(local_id, (err, result) => {
         if (err) return res.status(500).send({ err });
 
         var listLocalHasItem = [];

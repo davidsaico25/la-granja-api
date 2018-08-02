@@ -5,6 +5,7 @@ var moment = require('moment');
 
 var AbastecimientoModel = require('../models/abastecimiento');
 var AbastecimientoHasItemModel = require('../models/abastecimiento_has_item');
+var LocalHasItemModel = require('../models/local_has_item');
 
 var AbastecimientoController = () => { };
 
@@ -102,10 +103,12 @@ AbastecimientoController.getListByEstado = (req, res) => {
 
     let estado_abastecimiento_id = req.params.id;
 
+    if (estado_abastecimiento_id == null) estado_abastecimiento_id = [1, 2];
+
     AbastecimientoModel.getListByEstado(estado_abastecimiento_id, (error, result) => {
         if (error) return res.status(500).send({ error });
 
-        var listAbastecimiento = [];
+        let listAbastecimiento = [];
 
         result.forEach(row => {
             let abastecimiento = row.a;
@@ -117,7 +120,7 @@ AbastecimientoController.getListByEstado = (req, res) => {
 
         let array_promises = [];
         listAbastecimiento.forEach(abastecimiento => {
-            array_promises.push(validate(abastecimiento));
+            array_promises.push(getDetalle(abastecimiento));
         });
         listAbastecimiento.length = 0;
 
@@ -131,11 +134,43 @@ AbastecimientoController.getListByEstado = (req, res) => {
     });
 }
 
+AbastecimientoController.update = (req, res) => {
+    let id = req.params.id;
+
+    let params = req.body;
+
+    AbastecimientoModel.update(id, params, (error, result) => {
+        if (error) return res.status(500).send({ error });
+
+        return res.status(200).send({ result });
+    });
+}
+
+AbastecimientoController.confirmar = (req, res) => {
+    let id = req.params.id;
+
+    let params = req.body;
+
+    console.log(params);
+
+    let listAbastecimientoHasItem = JSON.parse(params.listAbastecimientoHasItem);
+
+    listAbastecimientoHasItem.forEach(ahi => {
+        console.log(ahi);
+    });
+
+    LocalHasItemModel.getByLocalAndItem(1, 2, (error, result) => {
+        if (error) return reject(error);
+
+        console.log(result);
+    });
+}
+
 module.exports = AbastecimientoController;
 
 //FUNCTIONS
 
-function validate(abastecimiento) {
+function getDetalle(abastecimiento) {
     var promise = new Promise(function (resolve, reject) {
         AbastecimientoHasItemModel.getList(abastecimiento.id, (error, result) => {
             if (error) return reject(error);
@@ -155,4 +190,16 @@ function validate(abastecimiento) {
     });
 
     return promise;
+}
+
+function updateAHI(ahi) {
+    let promise = new Promise(function (resolve, reject) {
+        let item = ahi.item;
+
+        LocalHasItemModel.getByLocalAndItem(1, item.id, (error, result) => {
+            if (error) return reject(error);
+    
+            console.log(result);
+        });
+    });
 }

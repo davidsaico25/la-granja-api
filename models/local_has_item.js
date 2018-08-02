@@ -3,9 +3,9 @@
 var mysql = require('mysql');
 var connection = require('./connection');
 
-var LocalHasInsumoModel = () => {};
+var LocalHasItemModel = () => {};
 
-LocalHasInsumoModel.getInventarioByLocal = (local_id, callback) => {
+LocalHasItemModel.getInventarioByLocal = (local_id, callback) => {
     var sql = "SELECT *" +
     " FROM `local_has_item` AS lhi" +
     " INNER JOIN `item` AS i" +
@@ -24,4 +24,17 @@ LocalHasInsumoModel.getInventarioByLocal = (local_id, callback) => {
     connection.query(options, callback);
 }
 
-module.exports = LocalHasInsumoModel;
+LocalHasItemModel.getByLocalAndItem = (local_id, item_id, callback) => {
+    let sql = "SELECT *" +
+    " FROM `local_has_item` AS lhi" +
+    " WHERE lhi.`local_id` = ?" +
+    " AND lhi.`item_id` = ?;";
+
+    let params = [local_id, item_id];
+
+    sql = mysql.format(sql, params);
+
+    connection.query(sql, callback);
+}
+
+module.exports = LocalHasItemModel;

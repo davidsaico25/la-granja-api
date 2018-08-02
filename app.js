@@ -13,6 +13,7 @@ var local_routes = require('./routes/local');
 var local_has_item_routes = require('./routes/local_has_item');
 var permiso_routes = require('./routes/permiso');
 var presentacion_item_routes = require('./routes/presentacion_item');
+var test_routes = require('./routes/test');
 var unidad_medida_routes = require('./routes/unidad_medida');
 var usuario_routes = require('./routes/usuario');
 
@@ -36,6 +37,7 @@ app.use('/api/local', local_routes);
 app.use('/api/local_has_item', local_has_item_routes);
 app.use('/api/permiso', permiso_routes);
 app.use('/api/presentacion_item', presentacion_item_routes);
+app.use('/api/test', test_routes);
 app.use('/api/unidad_medida', unidad_medida_routes);
 app.use('/api/usuario', usuario_routes);
 

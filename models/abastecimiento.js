@@ -33,7 +33,7 @@ AbastecimientoModel.getListByEstado = (estado_abastecimiento_id, callback) => {
     " ON (a.`local_id_destino` = l2.`id`)" +
     " INNER JOIN `estado_abastecimiento` AS ea" +
     " ON (ea.`id` = a.`estado_abastecimiento_id`)" +
-    " WHERE a.`estado_abastecimiento_id` = ?;";
+    " WHERE a.`estado_abastecimiento_id` IN (?);";
 
     var params = [estado_abastecimiento_id];
 
@@ -46,6 +46,11 @@ AbastecimientoModel.getListByEstado = (estado_abastecimiento_id, callback) => {
 AbastecimientoModel.create = (data, callback) => {
     var sql = "INSERT INTO `abastecimiento` SET ?";
     connection.query(sql, [data], callback);
+}
+
+AbastecimientoModel.update = (id, data, callback) => {
+    let sql = "UPDATE `abastecimiento` SET ? WHERE `id` = ?";
+    connection.query(sql, [data, id], callback);
 }
 
 module.exports = AbastecimientoModel;
