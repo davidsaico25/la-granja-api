@@ -108,6 +108,7 @@ AbastecimientoController.getListByEstado = (req, res) => {
     AbastecimientoModel.getListByEstado(estado_abastecimiento_id, (error, result) => {
         if (error) return res.status(500).send({ error });
 
+        /*
         let listAbastecimiento = [];
 
         result.forEach(row => {
@@ -118,11 +119,22 @@ AbastecimientoController.getListByEstado = (req, res) => {
             listAbastecimiento.push(abastecimiento);
         });
 
+        return res.status(200).send({ listAbastecimiento });
+*/
+        
         let array_promises = [];
-        listAbastecimiento.forEach(abastecimiento => {
-            array_promises.push(getDetalle(abastecimiento));
+
+        result.forEach(row => {
+            let abastecimiento = row.a;
+            abastecimiento.estado_abastecimiento = row.ea;
+            abastecimiento.local_origen = row.l1;
+            abastecimiento.local_destino = row.l2;
+            array_promises.push(abastecimiento);
         });
-        listAbastecimiento.length = 0;
+        
+        array_promises.forEach((abastecimiento, index) => {
+            array_promises[index] = getDetail(abastecimiento);
+        });
 
         Promise.all(array_promises)
             .then((listAbastecimiento) => {
@@ -170,7 +182,7 @@ module.exports = AbastecimientoController;
 
 //FUNCTIONS
 
-function getDetalle(abastecimiento) {
+function getDetail(abastecimiento) {
     var promise = new Promise(function (resolve, reject) {
         AbastecimientoHasItemModel.getList(abastecimiento.id, (error, result) => {
             if (error) return reject(error);
