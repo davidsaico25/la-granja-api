@@ -40,6 +40,7 @@ PresentacionItemController.getListByItem = (req, res) => {
         var listPresentacionItem = [];
         result.forEach(presentacionItem => {
             presentacionItem.pi.item = presentacionItem.i;
+            presentacionItem.pi.item.unidad_medida = presentacionItem.um;
             listPresentacionItem.push(presentacionItem.pi);
         });
 
@@ -63,7 +64,9 @@ PresentacionItemController.create = (req, res) => {
             PresentacionItemModel.create(params, (err, result) => {
                 if (err) return res.status(500).send({ err });
 
-                return res.status(200).send({ id: result.insertId });
+                params.id = result.insertId;
+
+                return res.status(200).send({ presentacion_item: params });
             });
         });
 }

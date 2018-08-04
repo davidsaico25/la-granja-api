@@ -25,6 +25,8 @@ PresentacionItemModel.getListByItem = (item_id, callback) => {
     " FROM `presentacion_item` AS pi" +
     " INNER JOIN `item` AS i" +
     " ON (i.`id` = pi.`item_id`)" +
+    " INNER JOIN `unidad_medida` AS um" +
+    " ON (i.`unidad_medida_id` = um.`id`)" +
     " WHERE pi.`item_id` = ?" +
     " AND pi.`estado` = 'A';";
 
