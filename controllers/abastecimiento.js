@@ -163,18 +163,13 @@ AbastecimientoController.confirmar = (req, res) => {
 
     let params = req.body;
 
-    console.log(params);
-
     let listAbastecimientoHasItem = JSON.parse(params.listAbastecimientoHasItem);
 
     listAbastecimientoHasItem.forEach(ahi => {
-        console.log(ahi);
     });
 
     LocalHasItemModel.getByLocalAndItem(1, 2, (error, result) => {
         if (error) return reject(error);
-
-        console.log(result);
     });
 }
 
@@ -210,8 +205,6 @@ function updateAHI(ahi) {
 
         LocalHasItemModel.getByLocalAndItem(1, item.id, (error, result) => {
             if (error) return reject(error);
-    
-            console.log(result);
         });
     });
 }

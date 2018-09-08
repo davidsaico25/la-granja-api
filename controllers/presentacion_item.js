@@ -21,7 +21,7 @@ PresentacionItemController.getList = (req, res) => {
         if (err) return res.status(500).send({ err });
 
         var listPresentacionItem = [];
-        
+
         result.forEach(row => {
             row.pi.item = row.i;
             row.pi.item.unidad_medida = row.um;
@@ -85,7 +85,7 @@ PresentacionItemController.update = (req, res) => {
             PresentacionItemModel.update(id, params, (err, result) => {
                 if (err) return res.status(500).send({ err });
 
-                return res.status(200).send({ result });
+                return res.status(200).send({ presentacion_item: params });
             });
         });
 }
@@ -140,7 +140,7 @@ PresentacionItemController.uploadImage = (req, res) => {
             PresentacionItemModel.update(presentacion_item_id, { imagen: file_name }, (err, result) => {
                 if (err) return res.status(500).send({ err });
 
-                res.status(200).send({ result });
+                res.status(200).send({ file_name });
             });
         } else {
             return res.status(200).send({ message: 'Extension del archivo no valida' });

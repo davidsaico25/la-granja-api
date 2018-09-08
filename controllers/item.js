@@ -24,7 +24,6 @@ ItemController.getList = (req, res) => {
         if (error) return res.status(500).send({ error });
 
         var listItem = [];
-
         result.forEach(row => {
             row.i.unidad_medida = row.um;
             row.i.marca_item = row.mi;
